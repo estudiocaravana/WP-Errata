@@ -1,0 +1,32 @@
+#com-estudiocaravana-errata-boxWrapper{
+	position:absolute; 
+	display:none
+}
+
+#com-estudiocaravana-errata-box{
+	background: #eee; 
+	position:absolute; 
+	width: 230px; 
+	padding: 10px;	
+}
+
+#com-estudiocaravana-errata-form{
+	display: none;
+}
+
+#com-estudiocaravana-errata-details{
+	display: none;
+}
+
+
+#com-estudiocaravana-errata-status-sendingErrata{
+	display: none;
+}
+
+#com-estudiocaravana-errata-status-errataSent{
+	display: none;
+}
+
+.com-estudiocaravana-errata-error{
+	display: none;
+}

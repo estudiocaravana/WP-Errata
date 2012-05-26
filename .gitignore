@@ -1,0 +1,13 @@
+# Mac OS files
+.DS_Store
+
+# Sublime Text 2 files
+*.json
+*.sublime-project
+*.sublime-workspace
+
+# Quanta files
+*.session
+*.webprj
+templates/**/*
+toolbars/**/*
