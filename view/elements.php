@@ -16,6 +16,13 @@
 			<span id="com-estudiocaravana-errata-correction-error-nocorrection" class="com-estudiocaravana-errata-error"><?php _e("A correction must be written",'ecerpl')?></span>
 			<br>				
 			<input type="hidden" name="com-estudiocaravana-errata-ipAddress" id="com-estudiocaravana-errata-ipAddress" value="<?php echo Util::getIpAddress(); ?>" />
+			<?php 
+				global $post;
+				if ($post){ ?>
+				<input type="hidden" name="com-estudiocaravana-errata-postID" id="com-estudiocaravana-errata-postID" value="<?php echo $post->ID; ?>" />
+			<?php
+				}
+			?>
 			<a href="javascript:errata.showDetails()"><?php _e("+ More details",'ecerpl')?></a>
 			<br>
 			<div id="com-estudiocaravana-errata-details">

@@ -39,7 +39,6 @@ function errata_header(){
 
 add_action('wp_head', 'errata_header');
 
-
 function errata_footer(){
 	require(WP_ERRATA_PATH . 'view/elements.php');
 }

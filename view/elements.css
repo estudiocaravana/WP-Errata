@@ -30,3 +30,15 @@
 .com-estudiocaravana-errata-error{
 	display: none;
 }
+
+.com-estudiocaravana-errata-mark{
+	background-color: red;
+}
+
+.com-estudiocaravana-errata-left:after{
+	content: "[";
+}
+
+.com-estudiocaravana-errata-right:after{
+	content: "]";
+}

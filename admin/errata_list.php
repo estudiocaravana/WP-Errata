@@ -32,10 +32,13 @@ class ErrataList extends WP_List_Table {
     }
 
     public function column_id($item){
-    	$html = $item->__get('id') . 
-    	'<div class="row-actions">
-    		<span class="edit"><a href="#" title="Edit this item">Edit</a>
-    		 | </span><span><a href="tools.php?page=errata_list&amp;errata_action=fix&amp;errata_id='.$item->__get('id').'">Mark as fixed</a>
+    	$html = $item->__get('id') . '
+
+    	<div class="row-actions">';
+    	if ($item->__get('postID')){
+    		$html.='<span class="edit"><a href="post.php?post='.$item->__get('postID').'&action=edit" title="Edit this item">Edit</a> | ';
+    	}
+    	$html.='</span><span><a href="tools.php?page=errata_list&amp;errata_action=fix&amp;errata_id='.$item->__get('id').'">Mark as fixed</a>
     		 | </span><span class="trash"><a href="tools.php?page=errata_list&amp;errata_action=delete&amp;errata_id='.$item->__get('id').'">Trash</a>     		 
     		 | </span><span class="view"><a href="'.add_query_arg('errata_path',$item->__get('path'),$item->__get('url')).'" title="View" rel="permalink">View</a></span>
     	</div>';
@@ -57,7 +60,7 @@ class ErrataList extends WP_List_Table {
 
     public function get_sortable_columns() {
         $sortable_columns = array(
-            'id'     => array('id',true)
+            'date'     => array('date',true)
         );
         return $sortable_columns;
     }

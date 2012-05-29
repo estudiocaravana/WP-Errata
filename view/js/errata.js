@@ -23,8 +23,8 @@ com.estudiocaravana.Errata = {};
 		var $_GET = _getQueryParams(document.location.search);
 		if ($_GET['errata_path']){
 			var path = $_GET['errata_path'].split("->");
-			_highlightErrata(document,path[1],"mark-right");
-			_highlightErrata(document,path[0],"mark-left");			
+			_highlightErrata(document,path[1],_ns+"mark "+_ns+"right");
+			_highlightErrata(document,path[0],_ns+"mark "+_ns+"left");			
 		}
 
 		//We get the plugin root directory path from the <script> tag included in the html document
@@ -177,7 +177,6 @@ com.estudiocaravana.Errata = {};
 			errataWrapper.contents().unwrap();
 
 			var ip = $(_nsid+"ipAddress").val();
-
 			
 			var data = "errata="+encodeURIComponent(errata)
 						+"&correction="+encodeURIComponent(correction)
@@ -185,6 +184,11 @@ com.estudiocaravana.Errata = {};
 						+"&path="+encodeURIComponent(path)
 						+"&ip="+encodeURIComponent(ip)
 						+"&html="+encodeURIComponent(html);
+
+			var postID = $(_nsid+"postID").val();
+			if (postID){
+				data+="&postID="+encodeURIComponent(postID);
+			}
 			
 			console.log("Sent message: "+data);	
 
@@ -251,14 +255,16 @@ com.estudiocaravana.Errata = {};
 				textContent = $element.text();
 				$element.replaceWith( textContent.slice(0,elementPosition) + '<span class="' + className + '"></span>' + textContent.slice(elementPosition,textContent.length) );
 
-				return;
+				return true;
 			}
 			else{
 				$element = $($element.contents().filter(function(){ return this.nodeName == tagName; }).get(elementPosition));
 			}
 
-			if (!$element) return;
+			if (!$element) return false;
 		}
+
+		return false;
 		
 	}
 	

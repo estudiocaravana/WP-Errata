@@ -7,6 +7,7 @@ class Errata {
 	private $errata;
 	private $correction;
 	private $url;
+	private $postID;
 	private $ip;
 	private $path;
 	private $html;
@@ -34,7 +35,7 @@ class Errata {
 	}
 	
 	public static function getOptionalProperties(){
-		return array("description","email");
+		return array("description","email","postID");
 	}
 
 }

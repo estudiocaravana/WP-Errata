@@ -19,6 +19,7 @@ class ErrataModel{
 		    `errata` varchar(50) CHARACTER SET utf8 NOT NULL,
 		    `correction` varchar(50) CHARACTER SET utf8 NOT NULL,
 		    `url` varchar(200) CHARACTER SET utf8 NOT NULL,
+		    `postID` int(10) unsigned NOT NULL,
 		    `ip` varchar(20) CHARACTER SET utf8 NOT NULL,
 		    `path` varchar(200) CHARACTER SET utf8 NOT NULL,
 		    `html` varchar(30) CHARACTER SET utf8 NOT NULL,
