@@ -23,9 +23,9 @@ com.estudiocaravana.Errata = {};
 		var $_GET = _getQueryParams(document.location.search);
 		if ($_GET['errata_path']){
 			var path = $_GET['errata_path'].split("->");
-			_markInPath(document,path[0]);
+			_highlightErrata(document,path[1],"mark-right");
+			_highlightErrata(document,path[0],"mark-left");			
 		}
-
 
 		//We get the plugin root directory path from the <script> tag included in the html document
 		_rootDirPath = $(_nsid+"script").attr("src");
@@ -214,81 +214,50 @@ com.estudiocaravana.Errata = {};
 	function _getElementPath(element)
 	{
 		return "/" + $(element).parents().andSelf().map(function() {
-	        var tagName = this.nodeName;
-	        var nodePosition = 0;
-	        if (tagName != undefined){
-	        	var parentNode = this.parentNode;
-	        	if (parentNode){
-	        		var siblingNodes = parentNode.childNodes;	        		
-	        		for (n in siblingNodes){
-	        			if (siblingNodes[n] == this){
-	        				break;
-	        			}
-	        			if (siblingNodes[n].nodeName == tagName){
-	        				nodePosition++;
-	        			}
-	        		}
-	        	}
-	        }
+			var $this = $(this),
+				$parent = $this.parent(),
+				tagName = this.nodeName,
+				nodePosition = 0;
 
-	        if (nodePosition){
-	        	tagName += "_" + nodePosition;
+	        if (tagName != undefined && $parent){
+	        	nodePosition = $parent.contents().filter(function(){ return this.nodeName == tagName; }).index(this);
 	        }
 	        
+	        tagName += "_" + nodePosition;	        
+	        
 	        return tagName;
+
 	    }).get().join("/");	    
 	}
 
-	function _markInPath(root,path){
-		var element = root;
-		var elementPosition = 0;
-		var lastElementPosition = 0;
+	function _highlightErrata(root,path,className){
+		var pathElement,
+			tagName,
+			textContent,
+			elementPosition;
+
+		var $element = $(root);		
 
 		path = path.split("/");
 
 		for (p in path){
 			if (!path[p]) continue;
 
-			var pathElement = path[p].split("_");
-			var tagName = pathElement[0];
+			pathElement = path[p].split("_");
+			tagName = pathElement[0];
 			elementPosition = pathElement[1] ? pathElement[1] : 0;
 
 			if (tagName == _letterToken){
-				var textContent = element.textContent;
-				var parentNode = element.parentNode;
-
-				parentNode.removeChild(parentNode.childNodes[lastElementPosition]);
-
-				parentNode.insertBefore(document.createTextNode(textContent.slice(elementPosition,textContent.length)), parentNode.childNodes[lastElementPosition]);
-
-				var span = document.createElement("span");
-				span.setAttribute("class","mark");
-				parentNode.insertBefore(span, parentNode.childNodes[lastElementPosition]);				
-
-				parentNode.insertBefore(document.createTextNode(textContent.slice(0,elementPosition)), parentNode.childNodes[lastElementPosition]);
+				textContent = $element.text();
+				$element.replaceWith( textContent.slice(0,elementPosition) + '<span class="' + className + '"></span>' + textContent.slice(elementPosition,textContent.length) );
 
 				return;
 			}
 			else{
-				var childNodes = element.childNodes;
-				element = null;
-				var e = elementPosition;
-				for (c in childNodes){
-					var childNode = childNodes[c];
-					if (childNode.nodeName == tagName){
-						if (e){
-							e--;							
-						}
-						else{
-							lastElementPosition = c;
-							element = childNode;
-							break;
-						}
-					}
-				}
+				$element = $($element.contents().filter(function(){ return this.nodeName == tagName; }).get(elementPosition));
 			}
 
-			if (!element) return;
+			if (!$element) return;
 		}
 		
 	}
