@@ -37,7 +37,7 @@ class ErrataList extends WP_List_Table {
     		<span class="edit"><a href="#" title="Edit this item">Edit</a>
     		 | </span><span><a href="tools.php?page=errata_list&amp;errata_action=fix&amp;errata_id='.$item->__get('id').'">Mark as fixed</a>
     		 | </span><span class="trash"><a href="tools.php?page=errata_list&amp;errata_action=delete&amp;errata_id='.$item->__get('id').'">Trash</a>     		 
-    		 | </span><span class="view"><a href="'.$item->__get('url').'" title="View" rel="permalink">View</a></span>
+    		 | </span><span class="view"><a href="'.add_query_arg('errata_path',$item->__get('path'),$item->__get('url')).'" title="View" rel="permalink">View</a></span>
     	</div>';
 
     	return $html;

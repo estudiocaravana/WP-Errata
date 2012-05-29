@@ -16,8 +16,16 @@ com.estudiocaravana.Errata = {};
 	var _selectedRange;
 	var _timeout;
 	var _allowMouseEvent=true;
+	var _letterToken = "LETTER";
 	
 	function init(){
+
+		var $_GET = _getQueryParams(document.location.search);
+		if ($_GET['errata_path']){
+			var path = $_GET['errata_path'].split("->");
+			_markInPath(document,path[0]);
+		}
+
 
 		//We get the plugin root directory path from the <script> tag included in the html document
 		_rootDirPath = $(_nsid+"script").attr("src");
@@ -29,6 +37,23 @@ com.estudiocaravana.Errata = {};
 		var textNodes = _getTextNodes(document);
 		textNodes = $(textNodes);
 		textNodes.parent().mouseup(_getSelectedText);
+	}
+
+	/**
+		Code from http://stackoverflow.com/questions/439463/how-to-get-get-and-post-variables-with-jquery
+	**/
+	function _getQueryParams(qs) {
+	    qs = qs.split("+").join(" ");
+	    var params = {},
+	        tokens,
+	        re = /[?&]?([^=]+)=([^&]*)/g;
+
+	    while (tokens = re.exec(qs)) {
+	        params[decodeURIComponent(tokens[1])]
+	            = decodeURIComponent(tokens[2]);
+	    }
+
+	    return params;
 	}
 
 	function _getTextNodes(node) {
@@ -129,8 +154,10 @@ com.estudiocaravana.Errata = {};
 
 			var url = _rootDirPath+"/view/newErrata.php";
 			
-			var path = _getElementPath(_selectedRange.startContainer)+"["+_selectedRange.startOffset+"]->"+
-						_getElementPath(_selectedRange.endContainer)+"["+_selectedRange.endOffset+"]";
+			var path = escape(
+						_getElementPath(_selectedRange.startContainer)+'/'+_letterToken+'_'+_selectedRange.startOffset+"->"+
+						_getElementPath(_selectedRange.endContainer)+'/'+_letterToken+'_'+_selectedRange.endOffset
+					   );
 
 			//We wrap the errata with a div in order to make its identification easier 
 			var errataWrapper = document.createElement("div");
@@ -186,14 +213,84 @@ com.estudiocaravana.Errata = {};
 
 	function _getElementPath(element)
 	{
-		return "//" + $(element).parents().andSelf().map(function() {
-	        var $this = $(this);
+		return "/" + $(element).parents().andSelf().map(function() {
 	        var tagName = this.nodeName;
-	        if (tagName != undefined && $this.siblings(tagName).length > 0) {
-	            tagName += "[" + $this.prevAll(tagName).length + "]";
+	        var nodePosition = 0;
+	        if (tagName != undefined){
+	        	var parentNode = this.parentNode;
+	        	if (parentNode){
+	        		var siblingNodes = parentNode.childNodes;	        		
+	        		for (n in siblingNodes){
+	        			if (siblingNodes[n] == this){
+	        				break;
+	        			}
+	        			if (siblingNodes[n].nodeName == tagName){
+	        				nodePosition++;
+	        			}
+	        		}
+	        	}
 	        }
+
+	        if (nodePosition){
+	        	tagName += "_" + nodePosition;
+	        }
+	        
 	        return tagName;
-	    }).get().join("/").toUpperCase();	    
+	    }).get().join("/");	    
+	}
+
+	function _markInPath(root,path){
+		var element = root;
+		var elementPosition = 0;
+		var lastElementPosition = 0;
+
+		path = path.split("/");
+
+		for (p in path){
+			if (!path[p]) continue;
+
+			var pathElement = path[p].split("_");
+			var tagName = pathElement[0];
+			elementPosition = pathElement[1] ? pathElement[1] : 0;
+
+			if (tagName == _letterToken){
+				var textContent = element.textContent;
+				var parentNode = element.parentNode;
+
+				parentNode.removeChild(parentNode.childNodes[lastElementPosition]);
+
+				parentNode.insertBefore(document.createTextNode(textContent.slice(elementPosition,textContent.length)), parentNode.childNodes[lastElementPosition]);
+
+				var span = document.createElement("span");
+				span.setAttribute("class","mark");
+				parentNode.insertBefore(span, parentNode.childNodes[lastElementPosition]);				
+
+				parentNode.insertBefore(document.createTextNode(textContent.slice(0,elementPosition)), parentNode.childNodes[lastElementPosition]);
+
+				return;
+			}
+			else{
+				var childNodes = element.childNodes;
+				element = null;
+				var e = elementPosition;
+				for (c in childNodes){
+					var childNode = childNodes[c];
+					if (childNode.nodeName == tagName){
+						if (e){
+							e--;							
+						}
+						else{
+							lastElementPosition = c;
+							element = childNode;
+							break;
+						}
+					}
+				}
+			}
+
+			if (!element) return;
+		}
+		
 	}
 	
 	function _showBox(event){

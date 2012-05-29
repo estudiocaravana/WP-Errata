@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: WP Errata
-Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
-Description: A brief description of the Plugin.
+Plugin URI: https://github.com/estudiocaravana/WP-Errata
+Description: A WordPress plugin for reporting, recording and managing errors in web site content.
 Version: 0.1
 Author: estudiocaravana
 Author URI: http://estudiocaravana.com
